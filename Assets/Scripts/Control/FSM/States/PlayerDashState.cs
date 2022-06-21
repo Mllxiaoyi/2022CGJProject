@@ -27,7 +27,7 @@ public class PlayerDashState : PlayerBaseState
     {
         if (Input.GetKey(KeyCode.A))
             _dir = -1;
-        else if (Input.GetKeyDown(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D))
             _dir = 1;
 
         fsm.animator.Play("DashStart");
