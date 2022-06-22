@@ -32,7 +32,6 @@ public class PlayerDashState : PlayerBaseState
 
         fsm.animator.Play("DashStart");
         _curDashDuration = 0;
-        _cd = 0.2f;
     }
 
 
@@ -41,6 +40,7 @@ public class PlayerDashState : PlayerBaseState
         if (_curDashDuration > dashTime)
         {
             EndState();
+            return;
         }
         if (fsm.animator.IsAnimFinished("DashStart"))
         {
@@ -56,5 +56,6 @@ public class PlayerDashState : PlayerBaseState
     public override void OnExit()
     {
         fsm.controller.Stop();
+        _cd = 0.2f;
     }
 }

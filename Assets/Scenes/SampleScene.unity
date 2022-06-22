@@ -194,8 +194,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7db94bc6c1bdd5d4db11ae70c8bff52e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dashDistance: 8
-  dashTime: 0.6
+  dashDistance: 12
+  dashTime: 0.3
 --- !u!114 &13931444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,6 +208,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 063388e565067ce4799933fc49a7e6de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackMoveSpeed: 18
+  attackMoveDuration: 0.08
 --- !u!1 &22971063
 GameObject:
   m_ObjectHideFlags: 0
