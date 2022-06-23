@@ -19,7 +19,14 @@ public class PlayerIdleState : PlayerBaseState
         }
         fsm.controller.Stop();
         fsm.TryEnterTargetState(E_PlayerStates.Attack);
-        fsm.TryEnterTargetState(E_PlayerStates.Block);
+        //格挡状态特殊处理,虽然格挡可以有按键延迟,但Idle状态不适用
+        if (Input.GetMouseButton(1)) { fsm.ChangeState(E_PlayerStates.Block); }
         fsm.TryEnterTargetState(E_PlayerStates.Dash);
+    }
+
+    public override void OnExit()
+    {
+        base.OnExit();
+        fsm.controller.FaceTo(1);
     }
 }

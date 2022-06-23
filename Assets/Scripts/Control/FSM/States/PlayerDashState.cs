@@ -20,16 +20,22 @@ public class PlayerDashState : PlayerBaseState
 
     public override bool DoReason()
     {
-        return (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))&& _cd<=0;
+        if (_cd >= 0) { return false; }
+        if (Input.GetKeyDown(KeyCode.A)|| InputManager.Instance.ReadCachedKey(KeyCode.A))
+        {
+            _dir = -1;
+            return true;
+        }
+        if (Input.GetKeyDown(KeyCode.D) || InputManager.Instance.ReadCachedKey(KeyCode.D))
+        {
+            _dir = 1;
+            return true;
+        }
+        return false;
     }
 
     public override void OnEnter()
     {
-        if (Input.GetKey(KeyCode.A))
-            _dir = -1;
-        else if (Input.GetKey(KeyCode.D))
-            _dir = 1;
-
         fsm.animator.Play("DashStart");
         _curDashDuration = 0;
     }

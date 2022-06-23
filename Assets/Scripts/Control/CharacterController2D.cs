@@ -43,11 +43,8 @@ public class CharacterController2D : MonoBehaviour
     [FoldoutGroup("物理碰撞检测")]
     public float groundedCheckRadius = 0.2f;
 
-    public bool CheckGrounded(Vector3 agentPos)
-    {
-        return Physics2D.OverlapCircle(agentPos + new Vector3(groundedCheckPoint.x, groundedCheckPoint.y, 0), groundedCheckRadius, groundMask);
-    }
 
+    public Vector2 Velocity { get; protected set; }
 
 
     [HideInInspector] public Collider2D myCollider;
@@ -57,28 +54,21 @@ public class CharacterController2D : MonoBehaviour
 
 
 
-    //public bool isGravityEnabled
-    //{
-    //    get { return rb.gravityScale == 0; }
-    //    set { if (!value) rb.gravityScale = 0; else rb.gravityScale = 1; }
-    //}
+
     private void Start()
     {
         myCollider = GetComponent<Collider2D>();
         rb = myCollider.attachedRigidbody;
         if (modelTrans == null)
         {
-            modelTrans = this.transform;
+            modelTrans = GetComponentInChildren<SpriteRenderer>().transform;
         }
         Initialize();
     }
     private void FixedUpdate()
     {
-        JustGotGrounded = (!IsGrounded) && CheckGrounded(this.transform.position);
-        IsGrounded = CheckGrounded(this.transform.position);
-
-        IsCollidingLeft = CastRayToSides(-1, wallMask);
-        IsCollidingRight = CastRayToSides(1, wallMask);
+        HandleCollision();
+        HandleMovement();
     }
 
 
@@ -87,19 +77,21 @@ public class CharacterController2D : MonoBehaviour
         gravityScale = rb.gravityScale;
     }
 
+    private void HandleMovement()
+    {
+        rb.MovePosition(rb.position + Velocity * Time.fixedDeltaTime);
+        Velocity = Vector2.zero;
+    }
+
 
     #region 物理检测部分
-    public bool CheckForwardCollision()
-    {
-        return CastRayToSides(Forward, wallMask);
-    }
 
     /// <summary>
     /// 水平方向的射线检测
     /// </summary>
     /// <param name="rayDirection">1或-1</param>
     /// <returns></returns>
-    public bool CastRayToSides(float rayDirection, LayerMask layerMask)
+    private bool CastRayToSides(float rayDirection, LayerMask layerMask)
     {
         Vector2 bound = myCollider.bounds.size;
         horizontalRayCastFromBottom = (Vector2)myCollider.bounds.center - bound.y / 2 * Vector2.up;
@@ -112,7 +104,6 @@ public class CharacterController2D : MonoBehaviour
         else if (rayDirection < 0)
             rayDirection = -1;
 
-
         for (int i = 0; i < numberOfHorizontalRays; i++)
         {
             Vector2 rayStartPos = Vector2.Lerp(horizontalRayCastFromBottom, horizontalRayCastToTop, (float)(i + 1) / (float)(numberOfHorizontalRays + 1));
@@ -122,7 +113,6 @@ public class CharacterController2D : MonoBehaviour
                 return true;
             }
         }
-
         return false;
     }
 
@@ -131,12 +121,18 @@ public class CharacterController2D : MonoBehaviour
         GravityScale = gravityScale;
     }
 
+    private bool CheckGrounded(Vector3 agentPos)
+    {
+        return Physics2D.OverlapCircle(agentPos + new Vector3(groundedCheckPoint.x, groundedCheckPoint.y, 0), groundedCheckRadius, groundMask);
+    }
+    private void HandleCollision()
+    {
+        JustGotGrounded = (!IsGrounded) && CheckGrounded(this.transform.position);
+        IsGrounded = CheckGrounded(this.transform.position);
+        IsCollidingLeft = CastRayToSides(-1, wallMask);
+        IsCollidingRight = CastRayToSides(1, wallMask);
+    }
     #endregion
-
-
-    //public Animator animator;
-
-
 
 
     #region 移动控制部分
@@ -144,7 +140,6 @@ public class CharacterController2D : MonoBehaviour
     protected Transform modelTrans;
 
     public bool isFacingRight = true;
-
     public int Forward
     {
         get
@@ -156,18 +151,14 @@ public class CharacterController2D : MonoBehaviour
         }
     }
 
-    public Vector2 Velocity => rb.velocity;
-
     /// <summary>
     /// Force the character face to a direction
     /// </summary>
     /// <param name="xDirection">Face right when this float bigger than 0</param>
     public virtual void FaceTo(float xDirection)
     {
-        if (xDirection == 0)
-        {
-            return;
-        }
+        if (xDirection == 0) { return; }
+
         if (xDirection > 0 && !isFacingRight)
         {
             Filp();
@@ -181,9 +172,8 @@ public class CharacterController2D : MonoBehaviour
     }
 
     public virtual void FaceTo(Vector3 target)
-    {
-        FaceTo(target.x - this.transform.position.x);
-    }
+        => FaceTo(target.x - this.transform.position.x);
+
 
     /// <summary>
     /// Flips the character and its dependencies horizontally
@@ -204,9 +194,8 @@ public class CharacterController2D : MonoBehaviour
     /// </summary>
     /// <param name="horizontalSpeed"></param>
     public void MoveForward(float horizontalSpeed)
-    {
-        SetXSpeed(horizontalSpeed * Forward);
-    }
+        => SetXSpeed(horizontalSpeed * Forward);
+
 
     public void MoveTowards(float horizontalSpeed, float direction)
     {
@@ -228,16 +217,7 @@ public class CharacterController2D : MonoBehaviour
 
     public void Stop()
     {
-        rb.velocity = Vector2.zero;
-    }
-
-
-    public void SetSpeed(float speed, Vector2 direction, bool isAdditive = false)
-    {
-        if (isAdditive)
-            rb.velocity += direction * speed;
-        else
-            rb.velocity = direction * speed;
+        Velocity = Vector2.zero;
     }
 
     private int HandlerFloatDirection(float direction)
@@ -250,22 +230,23 @@ public class CharacterController2D : MonoBehaviour
             return 0;
     }
 
-    //对刚体速度进行修改
+    //对速度进行修改
 
     public void SetXSpeed(float xSpeed)
     {
-        SetVelocity(new Vector2(xSpeed, rb.velocity.y));
+        SetVelocity(new Vector2(xSpeed, Velocity.y));
     }
 
     public void SetYSpeed(float ySpeed)
     {
-        SetVelocity(new Vector2(rb.velocity.x, ySpeed));
+        SetVelocity(new Vector2(Velocity.x, ySpeed));
     }
 
     public void SetVelocity(Vector2 newVelocity)
     {
-        rb.velocity = newVelocity;
+        Velocity = newVelocity;
     }
+
 
     #endregion
 }

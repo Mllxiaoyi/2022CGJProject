@@ -13,7 +13,7 @@ public class PlayerAttackState : PlayerBaseState
 
     public override bool DoReason()
     {
-        return Input.GetMouseButtonDown(0);
+        return Input.GetMouseButtonDown(0)||InputManager.Instance.ReadCachedKey(KeyCode.Mouse0);
     }
 
     public override void OnEnter()
@@ -27,6 +27,7 @@ public class PlayerAttackState : PlayerBaseState
             fsm.animator.Play("Attack");
         }
         _curDuration = 0;
+        fsm.controller.FaceTo(1);                   //≥Ø”“
     }
 
     public override void OnUpdate()
