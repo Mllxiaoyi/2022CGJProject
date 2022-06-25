@@ -6,6 +6,7 @@ public abstract class PlayerBaseState : MonoBehaviour, IState
 {
     protected PlayerFSM fsm;
     public virtual bool CanTranslateRepeatly=>false; 
+ 
     public void Init(PlayerFSM fsm)
     {
         this.fsm = fsm;

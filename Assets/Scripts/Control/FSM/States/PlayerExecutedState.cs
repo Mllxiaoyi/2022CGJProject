@@ -5,4 +5,9 @@ using UnityEngine;
 public class PlayerExecutedState : PlayerBaseState
 {
     public override E_PlayerStates StateID => E_PlayerStates.Executed;
+
+    public override void OnEnter()
+    {
+        base.OnEnter();
+    }
 }

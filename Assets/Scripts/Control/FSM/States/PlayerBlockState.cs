@@ -10,7 +10,7 @@ public class PlayerBlockState : PlayerBaseState
     //对于这个状态,需要做些修改
     public override bool DoReason()
     {
-        return Input.GetMouseButtonDown(1)||InputManager.Instance.ReadCachedKey(KeyCode.Mouse0);
+        return Input.GetMouseButton(1) || InputManager.Instance.ReadCachedKey(KeyCode.Mouse0);
     }
     public override void OnEnter()
     {
