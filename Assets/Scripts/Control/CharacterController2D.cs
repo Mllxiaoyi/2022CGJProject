@@ -27,10 +27,8 @@ public class CharacterController2D : MonoBehaviour
     public LayerMask wallMask = default;
 
     [FoldoutGroup("物理碰撞检测")]
-    public float numberOfHorizontalRays = 3;
+    public Transform wallCheckPos;
 
-    [FoldoutGroup("物理碰撞检测")]
-    public float rayCastLengthOffset = 0.08f;
 
     private Vector2 horizontalRayCastFromBottom;
     private Vector2 horizontalRayCastToTop;
@@ -49,8 +47,7 @@ public class CharacterController2D : MonoBehaviour
 
     [HideInInspector] public Collider2D myCollider;
     private Rigidbody2D rb;
-    private float gravityScale;
-    public float GravityScale { get { return rb.gravityScale; } set { rb.gravityScale = value; } }
+
 
 
 
@@ -63,19 +60,17 @@ public class CharacterController2D : MonoBehaviour
         {
             modelTrans = GetComponentInChildren<SpriteRenderer>().transform;
         }
-        Initialize();
     }
     private void FixedUpdate()
     {
-        HandleCollision();
+        if (wallCheckPos!=null&&Physics2D.OverlapCircle(wallCheckPos.position,0.2f,wallMask))
+        {
+            Velocity = Vector2.zero;
+        }
+        //HandleCollision();
         HandleMovement();
     }
 
-
-    private void Initialize()
-    {
-        gravityScale = rb.gravityScale;
-    }
 
     private void HandleMovement()
     {
@@ -83,7 +78,7 @@ public class CharacterController2D : MonoBehaviour
         Velocity = Vector2.zero;
     }
 
-
+    /*
     #region 物理检测部分
 
     /// <summary>
@@ -133,7 +128,7 @@ public class CharacterController2D : MonoBehaviour
         IsCollidingRight = CastRayToSides(1, wallMask);
     }
     #endregion
-
+    */
 
     #region 移动控制部分
     [SerializeField]

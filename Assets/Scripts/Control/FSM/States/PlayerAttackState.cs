@@ -18,7 +18,7 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void OnEnter()
     {
-        if (fsm.energy>=2)
+        if (fsm.combatData.energy>=2)
         {
             fsm.animator.Play("HeavyAttack");
         }

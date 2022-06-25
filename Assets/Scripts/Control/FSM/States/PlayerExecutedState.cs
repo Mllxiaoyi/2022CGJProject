@@ -8,6 +8,6 @@ public class PlayerExecutedState : PlayerBaseState
 
     public override void OnEnter()
     {
-        base.OnEnter();
+        fsm.animator.Play("Dead");
     }
 }

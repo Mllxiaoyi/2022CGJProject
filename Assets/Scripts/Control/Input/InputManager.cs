@@ -27,7 +27,7 @@ public class InputManager : MonoSingleton<InputManager>
     {
         if (Input.GetKeyDown(key))
         {
-            Debug.Log(key+"¼ü±»´¢´æ,0.2sºóÉ¾³ý");
+            //Debug.Log(key+"¼ü±»´¢´æ,0.2sºóÉ¾³ý");
             cachedKeys.Enqueue(key);
             StartCoroutine("DequeueKey");
         }        
