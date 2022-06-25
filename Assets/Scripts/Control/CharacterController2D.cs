@@ -48,7 +48,7 @@ public class CharacterController2D : MonoBehaviour
 
 
     [HideInInspector] public Collider2D myCollider;
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
     private float gravityScale;
     public float GravityScale { get { return rb.gravityScale; } set { rb.gravityScale = value; } }
 

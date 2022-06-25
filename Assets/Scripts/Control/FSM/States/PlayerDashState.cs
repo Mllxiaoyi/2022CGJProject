@@ -38,6 +38,8 @@ public class PlayerDashState : PlayerBaseState
     {
         fsm.animator.Play("DashStart");
         _curDashDuration = 0;
+        fsm.controller.gameObject.layer = LayerMask.NameToLayer("DashState");
+        fsm.combatData.Dash();
     }
 
 
@@ -62,6 +64,7 @@ public class PlayerDashState : PlayerBaseState
     public override void OnExit()
     {
         fsm.controller.Stop();
+        fsm.controller.gameObject.layer = LayerMask.NameToLayer("Default");
         _cd = 0.2f;
     }
 }

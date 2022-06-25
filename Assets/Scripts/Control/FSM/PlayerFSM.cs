@@ -24,6 +24,8 @@ public class PlayerFSM : MonoBehaviour
     [ShowInInspector, DisplayAsString]
     public E_PlayerStates LastState { get; private set;}
 
+    public CombatData combatData;
+
     void Start()
     {
         GetRelatedCompoents();
@@ -54,6 +56,8 @@ public class PlayerFSM : MonoBehaviour
 
     void Update()
     {
+        if (combatData.isDead)
+            return;
         statesDic[CurrentState]?.OnUpdate();
     }
 

@@ -13,7 +13,11 @@ public class PlayerIdleState : PlayerBaseState
     public override void OnUpdate()
     {
         base.OnUpdate();
-        if (fsm.animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        if (fsm.animator.GetCurrentAnimatorStateInfo(0).IsName("Hited"))
+        {
+            fsm.ChangeState(E_PlayerStates.Hited);
+        }
+        else if (fsm.animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         {
             fsm.controller.FaceTo(1);
         }

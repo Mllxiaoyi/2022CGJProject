@@ -18,21 +18,35 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void OnEnter()
     {
-        if (fsm.energy>=2)
+        if (fsm.combatData.enemyRole.jiaShiTiao <= 0)
         {
             fsm.animator.Play("HeavyAttack");
         }
         else
         {
-            fsm.animator.Play("Attack");
+            if (fsm.GetComponent<CombatData>().power >= 2)
+            {
+                fsm.animator.Play("HeavyAttack");
+                fsm.combatData.isBigAttack = true;
+                fsm.combatData.changePower(-9999);
+            }
+            else
+            {
+                fsm.animator.Play("Attack");
+            }
         }
+
         _curDuration = 0;
         fsm.controller.FaceTo(1);                   //≥Ø”“
     }
 
     public override void OnUpdate()
     {
-        if (fsm.animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        if (fsm.animator.GetCurrentAnimatorStateInfo(0).IsName("Hited"))
+        {
+            fsm.ChangeState(E_PlayerStates.Hited);
+        }
+       else if (fsm.animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         {
             EndState();
         }
