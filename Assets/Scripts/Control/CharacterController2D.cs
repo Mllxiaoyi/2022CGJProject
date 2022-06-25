@@ -24,13 +24,10 @@ public class CharacterController2D : MonoBehaviour
 
     [FoldoutGroup("物理碰撞检测")]
     [Header("WallCheck")]
+    public Transform wallCheckPos;
+    [FoldoutGroup("物理碰撞检测")]
     public LayerMask wallMask = default;
 
-    [FoldoutGroup("物理碰撞检测")]
-    public float numberOfHorizontalRays = 3;
-
-    [FoldoutGroup("物理碰撞检测")]
-    public float rayCastLengthOffset = 0.08f;
 
     private Vector2 horizontalRayCastFromBottom;
     private Vector2 horizontalRayCastToTop;
@@ -48,7 +45,12 @@ public class CharacterController2D : MonoBehaviour
 
 
     [HideInInspector] public Collider2D myCollider;
+<<<<<<< Updated upstream
     public Rigidbody2D rb;
+=======
+    private Rigidbody2D rb;
+
+>>>>>>> Stashed changes
     private float gravityScale;
     public float GravityScale { get { return rb.gravityScale; } set { rb.gravityScale = value; } }
 
@@ -67,8 +69,12 @@ public class CharacterController2D : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        HandleCollision();
-        HandleMovement();
+        //HandleCollision();
+        if (wallCheckPos!=null&&Physics2D.OverlapCircle(wallCheckPos.position,0.1f, wallMask))
+        {
+            Velocity = Vector2.zero;
+        }
+        HandleMovement();        
     }
 
 
@@ -86,52 +92,52 @@ public class CharacterController2D : MonoBehaviour
 
     #region 物理检测部分
 
-    /// <summary>
-    /// 水平方向的射线检测
-    /// </summary>
-    /// <param name="rayDirection">1或-1</param>
-    /// <returns></returns>
-    private bool CastRayToSides(float rayDirection, LayerMask layerMask)
-    {
-        Vector2 bound = myCollider.bounds.size;
-        horizontalRayCastFromBottom = (Vector2)myCollider.bounds.center - bound.y / 2 * Vector2.up;
-        horizontalRayCastToTop = (Vector2)myCollider.bounds.center + bound.y / 2 * Vector2.up;
+    ///// <summary>
+    ///// 水平方向的射线检测
+    ///// </summary>
+    ///// <param name="rayDirection">1或-1</param>
+    ///// <returns></returns>
+    //private bool CastRayToSides(float rayDirection, LayerMask layerMask)
+    //{
+    //    Vector2 bound = myCollider.bounds.size;
+    //    horizontalRayCastFromBottom = (Vector2)myCollider.bounds.center - bound.y / 2 * Vector2.up;
+    //    horizontalRayCastToTop = (Vector2)myCollider.bounds.center + bound.y / 2 * Vector2.up;
 
-        float rayCastLength = bound.x / 2 + rayCastLengthOffset;
+    //    float rayCastLength = bound.x / 2 + rayCastLengthOffset;
 
-        if (rayDirection > 0)
-            rayDirection = 1;
-        else if (rayDirection < 0)
-            rayDirection = -1;
+    //    if (rayDirection > 0)
+    //        rayDirection = 1;
+    //    else if (rayDirection < 0)
+    //        rayDirection = -1;
 
-        for (int i = 0; i < numberOfHorizontalRays; i++)
-        {
-            Vector2 rayStartPos = Vector2.Lerp(horizontalRayCastFromBottom, horizontalRayCastToTop, (float)(i + 1) / (float)(numberOfHorizontalRays + 1));
-            //Debug.DrawRay(rayStartPos, Vector2.right * rayDirection, Color.blue, rayCastLength);
-            if (Physics2D.Raycast(rayStartPos, Vector2.right * rayDirection, rayCastLength, layerMask))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+    //    for (int i = 0; i < numberOfHorizontalRays; i++)
+    //    {
+    //        Vector2 rayStartPos = Vector2.Lerp(horizontalRayCastFromBottom, horizontalRayCastToTop, (float)(i + 1) / (float)(numberOfHorizontalRays + 1));
+    //        //Debug.DrawRay(rayStartPos, Vector2.right * rayDirection, Color.blue, rayCastLength);
+    //        if (Physics2D.Raycast(rayStartPos, Vector2.right * rayDirection, rayCastLength, layerMask))
+    //        {
+    //            return true;
+    //        }
+    //    }
+    //    return false;
+    //}
 
-    public void ResetGravity()
-    {
-        GravityScale = gravityScale;
-    }
+    //public void ResetGravity()
+    //{
+    //    GravityScale = gravityScale;
+    //}
 
-    private bool CheckGrounded(Vector3 agentPos)
-    {
-        return Physics2D.OverlapCircle(agentPos + new Vector3(groundedCheckPoint.x, groundedCheckPoint.y, 0), groundedCheckRadius, groundMask);
-    }
-    private void HandleCollision()
-    {
-        JustGotGrounded = (!IsGrounded) && CheckGrounded(this.transform.position);
-        IsGrounded = CheckGrounded(this.transform.position);
-        IsCollidingLeft = CastRayToSides(-1, wallMask);
-        IsCollidingRight = CastRayToSides(1, wallMask);
-    }
+    //private bool CheckGrounded(Vector3 agentPos)
+    //{
+    //    return Physics2D.OverlapCircle(agentPos + new Vector3(groundedCheckPoint.x, groundedCheckPoint.y, 0), groundedCheckRadius, groundMask);
+    //}
+    //private void HandleCollision()
+    //{
+    //    JustGotGrounded = (!IsGrounded) && CheckGrounded(this.transform.position);
+    //    IsGrounded = CheckGrounded(this.transform.position);
+    //    IsCollidingLeft = CastRayToSides(-1, wallMask);
+    //    IsCollidingRight = CastRayToSides(1, wallMask);
+    //}
     #endregion
 
 

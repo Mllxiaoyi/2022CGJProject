@@ -6,13 +6,13 @@ using Sirenix.OdinInspector;
 public class PlayerFSM : MonoBehaviour
 {
     [Header("属性")]
-    public float energy;
     //有些状态结束后但动画没有播完,以此为判断
     [ReadOnly] public bool isAnimFinish;
 
     [Header("相关组件")]
     public Animator animator;
     public CharacterController2D controller;
+    public CombatData combatData;
 
     [Header("状态机相关")]
     public Transform statesRoot;
@@ -31,6 +31,9 @@ public class PlayerFSM : MonoBehaviour
         GetRelatedCompoents();
         RegistAllAbilities();
         CurrentState = E_PlayerStates.Idle;
+
+        combatData.OnHited.AddListener(ForceChangeToHitedState);
+        combatData.OnDied.AddListener(()=>ChangeState(E_PlayerStates.Executed));
     }
 
     private void RegistAllAbilities()
@@ -52,6 +55,35 @@ public class PlayerFSM : MonoBehaviour
     {
         if (!animator) { animator = GetComponent<Animator>(); }
         if (!controller) { controller = GetComponent<CharacterController2D>(); }
+        combatData = GetComponent<CombatData>();
+    }
+
+    /// <summary>
+    /// 强制转换到Hited状态
+    /// </summary>
+    private void ForceChangeToHitedState()
+    {
+        if (CurrentState != E_PlayerStates.Block)
+        {
+            ChangeState(E_PlayerStates.Hited);
+        }
+        else
+        {
+            StartCoroutine(OnHitBack());
+        }
+    }
+
+    IEnumerator OnHitBack()
+    {
+        float time = 0.2f;
+        while (time>0)
+        {
+            time -= Time.deltaTime;
+            
+            controller.MoveBackward(8);
+            yield return new WaitForEndOfFrame();
+        }
+        controller.Stop();
     }
 
     void Update()

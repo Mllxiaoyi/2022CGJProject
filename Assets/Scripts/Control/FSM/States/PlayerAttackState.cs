@@ -18,7 +18,11 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void OnEnter()
     {
+<<<<<<< Updated upstream
         if (fsm.combatData.enemyRole.jiaShiTiao <= 0)
+=======
+        if (fsm.combatData.energy>=2)
+>>>>>>> Stashed changes
         {
             fsm.animator.Play("HeavyAttack");
         }

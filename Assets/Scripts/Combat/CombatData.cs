@@ -1,15 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+<<<<<<< Updated upstream
 using UnityEngine.UI;
 
 public class CombatData : MonoBehaviour
 {
     public int jiaShiTiao;
     public int power;
+=======
+using UnityEngine.Events;
+using TMPro;
+public class CombatData : MonoBehaviour,IDamageable
+{
+    public int jiaShiTiao;
+    public int energy;
+    private Animator _animator;
+>>>>>>> Stashed changes
 
     public Animator animator;
 
+<<<<<<< Updated upstream
     //public bool isPerfectDefence;
     public Transform attackRange;
     
@@ -100,9 +111,30 @@ public class CombatData : MonoBehaviour
         {
             isCanEnterPerfectTrick = false;
         }
+=======
+    public TMP_Text hpText;
+
+    public GameObject diedFX;
+
+    public string campTag = "Enemy";
+
+    public UnityEvent OnHited;
+    public UnityEvent OnDamaged;
+    public UnityEvent OnDied;
+    private void Start()
+    {
+        _animator = GetComponent<Animator>();
+    }
+
+
+    private void LateUpdate()
+    {
+        hpText.text = jiaShiTiao.ToString();
+>>>>>>> Stashed changes
     }
     public void startPerfectCheck()
     {
+<<<<<<< Updated upstream
         //Debug.Log(transform.name + "进入可以被完美格挡闪避时间");
         attackRange.gameObject.SetActive(true);
         attackRange.GetComponent<Collider2D>().enabled = true;
@@ -128,11 +160,27 @@ public class CombatData : MonoBehaviour
     public void Dash()
     {
         if (isCanEnterPerfectTrick)
+=======
+        //Debug.Log(name + "OnTriggerEnter2D");
+        if (collision.tag != "Player" && collision.tag != "Enemy") { return; }
+        if (tag == collision.tag) { return; }     
+        
+        
+    }
+
+    void IDamageable.OnHited()
+    {
+        OnHited?.Invoke();
+        
+        //if (animator.GetCurrentAnimatorStateInfo(0).IsName("Block")) { return; }
+        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("PerfectBlock"))
+>>>>>>> Stashed changes
         {
             //Debug.Log("完美格挡");
             noDamageTimer = 0.5f;
             changePower(1);
         }
+<<<<<<< Updated upstream
     }
     public void Block()
     {
@@ -141,6 +189,13 @@ public class CombatData : MonoBehaviour
             //Debug.Log("完美闪避");
             noDamageTimer = 0.5f;
             changePower(1);
+=======
+        else if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Block"))
+        {
+            Debug.Log("普通格挡");
+            jiaShiTiao--;
+            OnDamaged?.Invoke();
+>>>>>>> Stashed changes
         }
     }
 
@@ -154,8 +209,20 @@ public class CombatData : MonoBehaviour
         texHp.text = "架势值：" + jiaShiTiao;
         if (jiaShiTiao <= 0)
         {
+<<<<<<< Updated upstream
             isDead = true;
             GetComponent<Animator>().Play("Dead");
+=======
+            jiaShiTiao -= 2;
+            OnDamaged?.Invoke();
+        }
+
+        if (jiaShiTiao <= 0)
+        {
+            OnDied?.Invoke();
+            this.tag = "Untagged";
+            return;
+>>>>>>> Stashed changes
         }
     }
     public void changePower(int value)

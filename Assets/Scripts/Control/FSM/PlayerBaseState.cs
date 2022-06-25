@@ -19,6 +19,12 @@ public abstract class PlayerBaseState : MonoBehaviour, IState
     {
         return false;
     }     
+
+    public void OnHited()
+    {
+
+    }
+
     protected void EndState()
     {
         fsm.ChangeState(E_PlayerStates.Idle);
