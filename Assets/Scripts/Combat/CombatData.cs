@@ -78,6 +78,7 @@ public class CombatData : MonoBehaviour
                     {
                         Debug.Log("普通受击");
                         this.changeHP(-2);
+                        GetComponent<Animator>().Play("Hited");
                         //受击状态
                     }
 
@@ -147,20 +148,15 @@ public class CombatData : MonoBehaviour
     {
         if (isDead)
             return;
-        //Debug.Log(value +"     "+jiaShiTiao);
+        //Debug.Log(value + "     " + jiaShiTiao);
         jiaShiTiao  +=value;
         jiaShiTiao = Mathf.Max(0, jiaShiTiao);
         texHp.text = "架势值：" + jiaShiTiao;
         if (jiaShiTiao <= 0)
         {
             isDead = true;
-            GetComponent<PlayerFSM>().animator.Play("Dead");
+            GetComponent<Animator>().Play("Dead");
         }
-        else
-        {
-            GetComponent<PlayerFSM>().animator.Play("Hited");
-        }
-       
     }
     public void changePower(int value)
     {
@@ -168,4 +164,6 @@ public class CombatData : MonoBehaviour
         power = Mathf.Max(0, jiaShiTiao);
         texPower.text = "能量值：" + power;
     }
+
+   
 }

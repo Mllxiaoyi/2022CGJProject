@@ -24,7 +24,8 @@ public class PlayerAttackState : PlayerBaseState
         }
         else
         {
-            if (fsm.GetComponent<CombatData>().power >= 2)
+            Debug.Log(fsm.combatData.power);
+            if (fsm.combatData.power >= 2)
             {
                 fsm.animator.Play("HeavyAttack");
                 fsm.combatData.isBigAttack = true;
